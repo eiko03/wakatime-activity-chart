@@ -20,7 +20,10 @@ function betweenMarkers(text) {
 async function run(id) {
     const browser = await puppeteer.launch({
         headless: true,
-        ignoreDefaultArgs: ['--disable-extensions'],
+        ignoreDefaultArgs: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ],
     });
 
     const device_width = 1920;
@@ -45,7 +48,7 @@ async function run(id) {
         svg_content = betweenMarkers(links);
     }
     else{
-        svg_content = "<h1>Wakatime  User not found </h1>";
+        svg_content = "<h1>Wakatime User not found </h1>";
     }
 
 
