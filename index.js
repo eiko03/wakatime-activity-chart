@@ -19,9 +19,8 @@ function betweenMarkers(text) {
 
 async function run(id) {
     const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: '/usr/bin/google-chrome',
-        args: ['--disable-gpu','--disable-extensions']});
+        headless: true
+    });
 
     const device_width = 1920;
     const device_height = 1080;
