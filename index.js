@@ -77,7 +77,7 @@ app.get('/:id', (req, res) =>{
 
 app.get('/', (req, res) => {
     res.setHeader("Content-Type", "image/svg+xml");
-    res.status(200).send(svg_start + svg_body_start+ "Please give a wakatime user name" + svg_body_end + svg_end);
+    res.status(200).send(svg_start + svg_body_start + "Please give a wakatime user name" + svg_body_end + svg_end);
 });
 
 
