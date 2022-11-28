@@ -70,7 +70,7 @@ app.get('/:id', (req, res) =>{
 })
 
 app.get('/', (req, res) => {
-    res.status(502).send("<svg>Please give a wakatime user name</svg>");
+    res.status(200).send("<svg>Please give a wakatime user name</svg>");
 });
 
 
