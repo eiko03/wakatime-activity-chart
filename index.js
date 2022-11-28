@@ -64,14 +64,14 @@ app.use(bodyparser.json());
 app.get('/:id', (req, res) =>{
 
          run(req.params.id).then(function (result) {
-            res.setHeader("Content-Type", "text/svg+xml")
+            // res.setHeader("Content-Type", "image/*")
             res.status(200).send(result);
         })
 
 })
 
 app.get('/', (req, res) => {
-    res.setHeader("Content-Type", "text/html")
+    res.setHeader("Content-Type", "image/svg+xml")
     res.status(502).send("<h1>Please give a wakatime user name</h1>");
 });
 
