@@ -19,8 +19,7 @@ function betweenMarkers(text) {
 
 async function run(id) {
     const browser = await puppeteer.launch({
-        headless: true,
-        ignoreDefaultArgs: [
+        args: [
             '--no-sandbox',
             '--disable-setuid-sandbox'
         ],
