@@ -68,12 +68,14 @@ app.use(bodyparser.json());
 app.get('/:id', (req, res) =>{
 
     scrap(req.params.id).then(function (result) {
+        res.setHeader("Content-Type", "image/svg+xml");
             res.status(200).send(result);
         })
 
 })
 
 app.get('/', (req, res) => {
+    res.setHeader("Content-Type", "image/svg+xml");
     res.status(200).send(svg_body_start+ "Please give a wakatime user name" + svg_body_end);
 });
 
