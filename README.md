@@ -1,3 +1,4 @@
+![Heroku](https://pyheroku-badge.herokuapp.com/?app=waka-analytic)
 
 Add wakatime activity to your github readme
 ie: 
