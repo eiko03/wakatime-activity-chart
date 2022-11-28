@@ -5,17 +5,21 @@ const puppeteer = require('puppeteer');
 const PAGE_URL = 'https://wakatime.com/@';
 let svg_content;
 
+const svg_body_start = "<svg width=\"250\" height=\"250\" xmlns=\"http://www.w3.org/2000/svg\"> <rect x=\"0\" y=\"0\" width=\"250\" height=\"250\" fill=\"aquamarine\" /> <foreignobject x=\"0\" y=\"0\" width=\"250\" height=\"250\"> <body xmlns=\"http://www.w3.org/1999/xhtml\"> <div>"
+const svg_body_end = "</div> </body> </foreignobject> </svg>"
 
-function betweenMarkers(text) {
+function formatSVG(text) {
     const begin = "<div style=\"display: inline-block; max-width: 100%; overflow-x: auto;\">";
 
     const end = "</svg>";
     const firstChar = text.indexOf(begin) + begin.length;
     const lastChar = text.indexOf(end);
-    return text.substring(firstChar, lastChar)+end;
+    let prefinal = text.substring(firstChar, lastChar)+end;
+    prefinal = prefinal.slice(4);
+    return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\"" + prefinal;
 }
 
-async function run(id) {
+async function scrap(id) {
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
@@ -42,10 +46,10 @@ async function run(id) {
 
     if(response.status() === 200){
         const links = await page.content();
-        svg_content = betweenMarkers(links);
+        svg_content = formatSVG(links);
     }
     else{
-        svg_content = "<svg>Wakatime User not found </svg>";
+        svg_content = svg_body_start+ "Wakatime User not found" + svg_body_end;
     }
 
 
@@ -63,14 +67,14 @@ app.use(bodyparser.json());
 
 app.get('/:id', (req, res) =>{
 
-         run(req.params.id).then(function (result) {
+    scrap(req.params.id).then(function (result) {
             res.status(200).send(result);
         })
 
 })
 
 app.get('/', (req, res) => {
-    res.status(200).send("<svg>Please give a wakatime user name</svg>");
+    res.status(200).send(svg_body_start+ "Please give a wakatime user name" + svg_body_end);
 });
 
 
