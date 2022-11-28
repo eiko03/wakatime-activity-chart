@@ -7,9 +7,8 @@ let svg_content;
 
 const svg_start = "<svg width=\"719\" height=\"111\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">";
 const svg_end = "</svg>";
-const svg_body_start = "<rect x=\"0\" y=\"0\" width=\"250\" height=\"250\" fill=\"aquamarine\" /> <foreignobject x=\"0\" y=\"0\" width=\"250\" height=\"250\"> <body xmlns=\"http://www.w3.org/1999/xhtml\"> <div>"
-const svg_body_end = "</div> </body> </foreignobject> "
-
+const svg_body_start = "<g>  <rect x=\"0\" y=\"0\" width=\"1920\" height=\"1080\" fill=\"black\"></rect> <text x=\"0\" y=\"50\" font-family=\"Verdana\" font-size=\"35\" fill=\"white\">"
+const svg_body_end = "</text>  </g> "
 function formatSVG(text) {
     const begin = "<svg height=\"111\" width=\"719\">";
     const end = "</svg>";
