@@ -7,14 +7,12 @@ let svg_content;
 
 
 function betweenMarkers(text) {
-    const begin = "<div class=\"title\">\n" +
-        "          ACTIVITY LAST YEAR\n" +
-        "        </div>";
+    const begin = "<div style=\"display: inline-block; max-width: 100%; overflow-x: auto;\">";
 
-    const end = "<hr>";
+    const end = "</svg>";
     const firstChar = text.indexOf(begin) + begin.length;
     const lastChar = text.indexOf(end);
-    return begin.replace("ACTIVITY", "WAKATIME ACTIVITY")+text.substring(firstChar, lastChar);
+    return text.substring(firstChar, lastChar)+end;
 }
 
 async function run(id) {
@@ -66,7 +64,7 @@ app.use(bodyparser.json());
 app.get('/:id', (req, res) =>{
 
          run(req.params.id).then(function (result) {
-            res.setHeader("Content-Type", "text/html")
+            res.setHeader("Content-Type", "text/svg+xml")
             res.status(200).send(result);
         })
 
