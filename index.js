@@ -45,7 +45,7 @@ async function run(id) {
         svg_content = betweenMarkers(links);
     }
     else{
-        svg_content = "<h1>Wakatime User not found </h1>";
+        svg_content = "<svg>Wakatime User not found </svg>";
     }
 
 
@@ -64,15 +64,13 @@ app.use(bodyparser.json());
 app.get('/:id', (req, res) =>{
 
          run(req.params.id).then(function (result) {
-            // res.setHeader("Content-Type", "image/*")
             res.status(200).send(result);
         })
 
 })
 
 app.get('/', (req, res) => {
-    res.setHeader("Content-Type", "image/svg+xml")
-    res.status(502).send("<h1>Please give a wakatime user name</h1>");
+    res.status(502).send("<svg>Please give a wakatime user name</svg>");
 });
 
 
