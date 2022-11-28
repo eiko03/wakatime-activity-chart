@@ -5,18 +5,19 @@ const puppeteer = require('puppeteer');
 const PAGE_URL = 'https://wakatime.com/@';
 let svg_content;
 
-const svg_body_start = "<svg width=\"250\" height=\"250\" xmlns=\"http://www.w3.org/2000/svg\"> <rect x=\"0\" y=\"0\" width=\"250\" height=\"250\" fill=\"aquamarine\" /> <foreignobject x=\"0\" y=\"0\" width=\"250\" height=\"250\"> <body xmlns=\"http://www.w3.org/1999/xhtml\"> <div>"
-const svg_body_end = "</div> </body> </foreignobject> </svg>"
+const svg_start = "<svg width=\"719\" height=\"111\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">";
+const svg_end = "</svg>";
+const svg_body_start = "<rect x=\"0\" y=\"0\" width=\"250\" height=\"250\" fill=\"aquamarine\" /> <foreignobject x=\"0\" y=\"0\" width=\"250\" height=\"250\"> <body xmlns=\"http://www.w3.org/1999/xhtml\"> <div>"
+const svg_body_end = "</div> </body> </foreignobject> "
 
 function formatSVG(text) {
-    const begin = "<div style=\"display: inline-block; max-width: 100%; overflow-x: auto;\">";
-
+    const begin = "<svg height=\"111\" width=\"719\">";
     const end = "</svg>";
+
     const firstChar = text.indexOf(begin) + begin.length;
     const lastChar = text.indexOf(end);
-    let prefinal = text.substring(firstChar, lastChar)+end;
-    prefinal = prefinal.slice(4);
-    return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\"" + prefinal;
+    return  svg_start + text.substring(firstChar, lastChar) + svg_end;
+
 }
 
 async function scrap(id) {
@@ -49,7 +50,7 @@ async function scrap(id) {
         svg_content = formatSVG(links);
     }
     else{
-        svg_content = svg_body_start+ "Wakatime User not found" + svg_body_end;
+        svg_content = svg_start + svg_body_start + "Wakatime User not found" + svg_body_end + svg_end;
     }
 
 
@@ -76,7 +77,7 @@ app.get('/:id', (req, res) =>{
 
 app.get('/', (req, res) => {
     res.setHeader("Content-Type", "image/svg+xml");
-    res.status(200).send(svg_body_start+ "Please give a wakatime user name" + svg_body_end);
+    res.status(200).send(svg_start + svg_body_start+ "Please give a wakatime user name" + svg_body_end + svg_end);
 });
 
 
