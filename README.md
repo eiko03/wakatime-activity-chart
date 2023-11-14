@@ -7,5 +7,5 @@ ie:
 ```
 example
 
-[![Wakatime Stats](http://cooked-stormy-pyramid.glitch.me/eiko03)](https://github.com/eiko03/wakatime-activity-chart)
+<img src="https://cooked-stormy-pyramid.glitch.me/eiko03" >
 
