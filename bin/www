@@ -1,0 +1,108 @@
+#!/usr/bin/env node
+
+const bodyparser= require('body-parser')
+const express = require('express');
+const app = express();
+const PAGE_URL_WAKA = 'https://wakatime.com/@';
+let svg_content;
+const chromium = require('@sparticuz/chromium-min');
+const puppeteer = require('puppeteer-core');
+
+const svg_start = "<svg width=\"719\" height=\"111\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">";
+const svg_end = "</svg>";
+const svg_body_start = "<g>  <rect x=\"0\" y=\"0\" width=\"1920\" height=\"1080\" fill=\"black\"></rect> <text x=\"0\" y=\"50\" font-family=\"Verdana\" font-size=\"35\" fill=\"white\">"
+const svg_body_end = "</text>  </g> "
+
+function formatSVGWaka(text) {
+    const begin = "<svg height=\"111\" width=\"719\">";
+    const end = "</svg>";
+
+    const firstChar = text.indexOf(begin) + begin.length;
+    const lastChar = text.indexOf(end);
+    return  svg_start + text.substring(firstChar, lastChar) + svg_end;
+
+}
+
+function formatSVGLeet(text) {
+    const begin = "<svg viewBox=\"0 0 799.3 104.64\" width=\"804\">";
+    const end = "</svg>";
+
+    const firstChar = text.indexOf(begin) + begin.length;
+    const lastChar = text.indexOf(end);
+    return  svg_start + text.substring(firstChar, lastChar) + svg_end;
+
+}
+
+async function scrap(id, type="wakatime") {
+    const browser = await puppeteer.launch({
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ],
+
+        executablePath: await chromium.executablePath(
+            `./chrome/chromium.br`
+        ),
+        defaultViewport: chromium.defaultViewport,
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true,
+    });
+
+    const device_width = 1920;
+    const device_height = 1080;
+
+
+
+    const page = await browser.newPage();
+
+    await page.setCacheEnabled(false);
+    await page.setViewport({width: device_width, height: device_height})
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
+
+    const response = await page.goto( PAGE_URL_WAKA + id, {
+        timeout: 60000,
+        waitUntil: 'networkidle0'
+    });
+    console.log(response);
+
+    if(response.status() === 200){
+        const links = await page.content();
+        svg_content = type === "wakatime" ? formatSVGWaka(links) : formatSVGLeet(links);
+    }
+    else{
+        svg_content = svg_start + svg_body_start + type +" user not found" + svg_body_end + svg_end;
+    }
+
+
+    await page.close();
+    await browser.close();
+
+    return svg_content;
+}
+
+
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyparser.json());
+
+
+
+app.get('/', (req, res) => {
+
+    if(req.query.id){
+        scrap(req.query.id, req.query.type).then(function (result) {
+            res.setHeader("Content-Type", "image/svg+xml");
+            res.status(200).send(result);
+        })
+    }
+
+
+    else{
+        res.setHeader("Content-Type", "image/svg+xml");
+        res.status(200).send(svg_start + svg_body_start + "Please give a "+req.query.type+" user name" + svg_body_end + svg_end);
+    }
+});
+
+
+app.listen(  process.env.PORT || 3030, function() {
+    console.log( this.address().port )
+});
