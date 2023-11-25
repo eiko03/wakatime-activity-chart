@@ -41,7 +41,7 @@ async function scrap(id, type="wakatime") {
         ],
 
         executablePath: await chromium.executablePath(
-            `./chrome/chromium.br`
+            `../chrome/chromium.br`
         ),
         defaultViewport: chromium.defaultViewport,
         headless: chromium.headless,
