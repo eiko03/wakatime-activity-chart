@@ -3,9 +3,9 @@
 Add wakatime activity to your github readme
 ie: 
 ```md
-[![Wakatime Stats](https://cooked-stormy-pyramid.glitch.me/username)](https://github.com/eiko03/wakatime-activity-chart)
+[![Wakatime Stats](https://wakatime-activity-chart.vercel.app/?id=username)](https://github.com/eiko03/wakatime-activity-chart)
 ```
 example
 
-<img src="https://cooked-stormy-pyramid.glitch.me/eiko03" >
+<img src="https://wakatime-activity-chart.vercel.app/?id=eiko03" >
 
