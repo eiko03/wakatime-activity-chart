@@ -3,7 +3,8 @@ const express = require('express');
 const app = express();
 const PAGE_URL_WAKA = 'https://wakatime.com/@';
 let svg_content;
-const chromium = require('chrome-aws-lambda');
+const chromium = require('@sparticuz/chromium-min');
+const puppeteer = require('puppeteer-core');
 
 const svg_start = "<svg width=\"719\" height=\"111\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">";
 const svg_end = "</svg>";
@@ -31,11 +32,18 @@ function formatSVGLeet(text) {
 }
 
 async function scrap(id, type="wakatime") {
-    const browser = await chromium.puppeteer.launch({
+    const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox'
         ],
+
+        executablePath: await chromium.executablePath(
+            `./chrome/chromium.br`
+        ),
+        defaultViewport: chromium.defaultViewport,
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true,
     });
 
     const device_width = 1920;
