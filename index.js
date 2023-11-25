@@ -1,10 +1,9 @@
 const bodyparser= require('body-parser')
 const express = require('express');
 const app = express();
-const puppeteer = require('puppeteer');
 const PAGE_URL_WAKA = 'https://wakatime.com/@';
-const PAGE_URL_LEET = 'https://leetcode.com/';
 let svg_content;
+const chromium = require('chrome-aws-lambda');
 
 const svg_start = "<svg width=\"719\" height=\"111\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">";
 const svg_end = "</svg>";
@@ -32,7 +31,7 @@ function formatSVGLeet(text) {
 }
 
 async function scrap(id, type="wakatime") {
-    const browser = await puppeteer.launch({
+    const browser = await chromium.puppeteer.launch({
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox'
@@ -50,7 +49,7 @@ async function scrap(id, type="wakatime") {
     await page.setViewport({width: device_width, height: device_height})
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
 
-    const response = await page.goto( PAGE_URL_LEET + id, {
+    const response = await page.goto( PAGE_URL_WAKA + id, {
         timeout: 60000,
         waitUntil: 'networkidle0'
     });
