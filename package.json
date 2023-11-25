@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node index"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "author": "Tipu Sultan Eiko",
   "license": "ISC",
   "dependencies": {

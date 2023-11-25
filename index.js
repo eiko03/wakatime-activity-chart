@@ -2,14 +2,16 @@ const bodyparser= require('body-parser')
 const express = require('express');
 const app = express();
 const puppeteer = require('puppeteer');
-const PAGE_URL = 'https://wakatime.com/@';
+const PAGE_URL_WAKA = 'https://wakatime.com/@';
+const PAGE_URL_LEET = 'https://leetcode.com/';
 let svg_content;
 
 const svg_start = "<svg width=\"719\" height=\"111\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">";
 const svg_end = "</svg>";
 const svg_body_start = "<g>  <rect x=\"0\" y=\"0\" width=\"1920\" height=\"1080\" fill=\"black\"></rect> <text x=\"0\" y=\"50\" font-family=\"Verdana\" font-size=\"35\" fill=\"white\">"
 const svg_body_end = "</text>  </g> "
-function formatSVG(text) {
+
+function formatSVGWaka(text) {
     const begin = "<svg height=\"111\" width=\"719\">";
     const end = "</svg>";
 
@@ -19,7 +21,17 @@ function formatSVG(text) {
 
 }
 
-async function scrap(id) {
+function formatSVGLeet(text) {
+    const begin = "<svg viewBox=\"0 0 799.3 104.64\" width=\"804\">";
+    const end = "</svg>";
+
+    const firstChar = text.indexOf(begin) + begin.length;
+    const lastChar = text.indexOf(end);
+    return  svg_start + text.substring(firstChar, lastChar) + svg_end;
+
+}
+
+async function scrap(id, type="wakatime") {
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
@@ -38,18 +50,18 @@ async function scrap(id) {
     await page.setViewport({width: device_width, height: device_height})
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
 
-    const response = await page.goto(PAGE_URL+id, {
+    const response = await page.goto( PAGE_URL_LEET + id, {
         timeout: 60000,
         waitUntil: 'networkidle0'
-    })
-
+    });
+    console.log(response);
 
     if(response.status() === 200){
         const links = await page.content();
-        svg_content = formatSVG(links);
+        svg_content = type === "wakatime" ? formatSVGWaka(links) : formatSVGLeet(links);
     }
     else{
-        svg_content = svg_start + svg_body_start + "Wakatime User not found" + svg_body_end + svg_end;
+        svg_content = svg_start + svg_body_start + type +" user not found" + svg_body_end + svg_end;
     }
 
 
@@ -65,18 +77,20 @@ app.use(bodyparser.json());
 
 
 
-app.get('/:id', (req, res) =>{
+app.get('/', (req, res) => {
 
-    scrap(req.params.id).then(function (result) {
-        res.setHeader("Content-Type", "image/svg+xml");
+    if(req.query.id){
+        scrap(req.query.id, req.query.type).then(function (result) {
+            res.setHeader("Content-Type", "image/svg+xml");
             res.status(200).send(result);
         })
+    }
 
-})
 
-app.get('/', (req, res) => {
-    res.setHeader("Content-Type", "image/svg+xml");
-    res.status(200).send(svg_start + svg_body_start + "Please give a wakatime user name" + svg_body_end + svg_end);
+    else{
+        res.setHeader("Content-Type", "image/svg+xml");
+        res.status(200).send(svg_start + svg_body_start + "Please give a "+req.query.type+" user name" + svg_body_end + svg_end);
+    }
 });
 
 
